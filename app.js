@@ -21,10 +21,6 @@ app.disable('x-powered-by');
 
 app.use(bodyParser.json());
 
-app.get('*', (req, res) => {
-    res.send('index_path');
-});
-
 // don't show the log when it is test
 if (process.env.NODE_ENV !== 'test') {
     // use morgan to log at command line
