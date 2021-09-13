@@ -1,6 +1,6 @@
 const mongoose  = require('mongoose');
 const { optionalRequire } = require("optional-require");
-const config = optionalRequire("./config.json", { require }) || {};
+const config = optionalRequire("../config.json", { require }) || {};
 // const config = require("../config.json")
 
 function dbconnect() {
