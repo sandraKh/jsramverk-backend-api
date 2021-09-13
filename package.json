@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text --reporter=clover mocha --timeout 10000",
+    "test": "mocha --recursive --exit --timeout 10000",
     "start": "nodemon app.js",
     "production": "NODE_ENV='production' node app.js",
     "eslint": "eslint ."
