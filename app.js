@@ -1,17 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const app = express();
 const Documents = require("./models/data.js");
-const config = require("./config.json");
 
-const dbURI = `mongodb+srv://${config.username}:${config.password}@cluster0.xfvcp.mongodb.net/database?retryWrites=true&w=majority`;
-mongoose.connect(dbURI,  { useNewUrlParser: true, useUnifiedTopology: true })
-.then((result) => console.log("connected to db"))
-.catch((err) => console.log(err));
+
+process.env.NODE_ENV = 'ci' 
+
+const mongooseConnect = require('./helpers/dbConnect');
+
+mongooseConnect.dbconnect()
+                .on('error', () => console.log("connection to db failed"))
 
 const port = process.env.PORT || 1337;
 
@@ -34,8 +34,9 @@ app.get('/', (req, res) => {
     .then((result) => {
         res.send(result);
     })
-    .catch((err) => {
-        console.log(err);
+    .catch(() => {
+        res.status(500).send('Data not found')
+
     });
 });
 
@@ -45,8 +46,8 @@ app.get('/:id', (req, res) => {
     .then((result) => {
         res.send(result);
     })
-    .catch((err) => {
-        console.log(err);
+    .catch(() => {
+        res.status(404).send('data not found')
     });
 });
 
@@ -58,22 +59,21 @@ app.post('/', (req, res) => {
 
     doc.save()
     .then(result => {
-        res.json(result);
+        res.send(result);
     })
-    .catch(err => {
-        console.log(err);
+    .catch(() => {
+        res.status(404).send('Could not save to database.')
     })
 });
 
 app.delete('/:id', (req, res) => {
-    
-    Documents.remove({_id : req.params.id})
-    .then((result) => {
-        res.send(result);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+        Documents.remove({_id : req.params.id})
+        .then((result) => {
+            res.send(result);
+        })
+        .catch(() => {
+            res.status(404).send('Could not delete from database.')
+        });
 });
 
 app.patch('/:id', (req, res) => {
@@ -82,15 +82,15 @@ app.patch('/:id', (req, res) => {
     .then((result) => {
         res.send(result);
     })
-    .catch((err) => {
-        console.log(err);
+    .catch(() => {
+        res.status(404).send('Could not update database. Make sure _ID is correct.')
     });
 });
 
 
 
 const server = app.listen(port, () => {
-    console.log('auth api listening on port ' + port);
+    console.log('api listening on port ' + port);
 });
 
 module.exports = server;
