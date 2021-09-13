@@ -8,10 +8,10 @@ const Documents = require("./models/data.js");
 
 process.env.NODE_ENV = 'ci' 
 
-const mongooseConnect = require('./helpers/dbConnect');
+// const mongooseConnect = require('./helpers/dbConnect');
 
-mongooseConnect.dbconnect()
-                .on('error', () => console.log("connection to db failed"))
+// mongooseConnect.dbconnect()
+//                 .on('error', () => console.log("connection to db failed"))
 
 const port = process.env.PORT || 1337;
 
