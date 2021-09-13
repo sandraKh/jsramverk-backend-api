@@ -5,11 +5,7 @@ const mongoose  = require('mongoose');
 
 let config;
 
-try {
-  config = require('../config.json');
-} catch (error) {
-  console.error(error);
-}
+
 
 function dbconnect() {
   if ( process.env.NODE_ENV == 'dev'  ) {
@@ -17,6 +13,13 @@ function dbconnect() {
     return mongoose.connection
 
   } else  if ( process.env.NODE_ENV == 'ci'  ) {
+
+    try {
+      config = require('../config.json');
+    } catch (error) {
+      console.error(error);
+    }
+    
     const dbURI = `mongodb+srv://${config.username}:${config.password}@cluster0.xfvcp.mongodb.net/database?retryWrites=true&w=majority`;
     mongoose.connect(dbURI,  { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("connected to db"))
