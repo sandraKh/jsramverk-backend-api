@@ -2,22 +2,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
-const app = express();
 const Documents = require("./models/data.js");
 
 
 process.env.NODE_ENV = 'ci' 
 
-// const mongooseConnect = require('./helpers/dbConnect');
+const mongooseConnect = require('./helpers/dbConnect');
 
 // mongooseConnect.dbconnect()
 //                 .on('error', () => console.log("connection to db failed"))
 
-const port = process.env.PORT || 1337;
+const app = express();
 
 app.use(cors());
 app.options('*', cors());
 app.disable('x-powered-by');
+
+app.use((req, res, next) => {
+    console.log(req.method);
+    console.log(req.path);
+    next();
+});
 
 app.use(bodyParser.json());
 
@@ -89,8 +94,8 @@ app.patch('/:id', (req, res) => {
 
 
 
-const server = app.listen(port, () => {
-    console.log('api listening on port ' + port);
-});
+// const server = app.listen(port, () => {
+//     console.log('api listening on port ' + port);
+// });
 
-module.exports = server;
+module.exports = app;
