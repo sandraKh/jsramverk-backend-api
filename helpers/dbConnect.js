@@ -1,7 +1,7 @@
 const mongoose  = require('mongoose');
-// const { optionalRequire } = require("optional-require");
-// const config = optionalRequire("./config.json", { require }) || {};
-const config = require("../config.json")
+const { optionalRequire } = require("optional-require");
+const config = optionalRequire("./config.json", { require }) || {};
+// const config = require("../config.json")
 
 function dbconnect() {
   if ( process.env.NODE_ENV === 'dev'  ) {
