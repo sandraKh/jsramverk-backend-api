@@ -1,6 +1,5 @@
 # rest-api
- 
- # rest-api
+
 
 [![Build Status](https://app.travis-ci.com/sandraKh/jsramverk-backend-api.svg?branch=main)](https://app.travis-ci.com/sandraKh/jsramverk-backend-api)
 This is an api for creating, updating and deleting documents in MongoDB database. It is made for the course JS-ramverk at BTH.
