@@ -1,3 +1,5 @@
+const userRoutes = './routes/users.js'
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -9,8 +11,8 @@ process.env.NODE_ENV = 'ci'
 
 const mongooseConnect = require('./helpers/dbConnect');
 
-// mongooseConnect.dbconnect()
-//                 .on('error', () => console.log("connection to db failed"))
+mongooseConnect.dbconnect()
+                .on('error', () => console.log("connection to db failed"))
 
 const app = express();
 
@@ -92,6 +94,7 @@ app.patch('/:id', (req, res) => {
     });
 });
 
+app.use('/user', userRoutes);
 
 
 // const server = app.listen(port, () => {
