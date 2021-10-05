@@ -1,13 +1,18 @@
-const userRoutes = './routes/users.js'
+const router = require('./routes/users.js')
+
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
-const Documents = require("./models/data.js");
+const Documents = require('./models/data.js')
+const { graphqlHTTP } = require('express-graphql');
+const visual = false;
 
-
+const auth = require('./middleware/auth.js');
 process.env.NODE_ENV = 'ci' 
+
+
 
 const mongooseConnect = require('./helpers/dbConnect');
 
@@ -34,9 +39,23 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined')); // 'combined' outputs the Apache style LOGs
 }
 
+const {
+    GraphQLSchema
+  } = require("graphql");
+  
+  const RootQueryType = require("./graphql/root.js");
+  
+  const schema = new GraphQLSchema({
+      query: RootQueryType
+  });
+
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    graphiql: visual, // Visual är satt till true under utveckling
+}));
 
 app.get('/', (req, res) => {
-    
+
     Documents.find().sort({ createdAt: -1 })
     .then((result) => {
         res.send(result);
@@ -45,6 +64,7 @@ app.get('/', (req, res) => {
         res.status(500).send('Data not found')
 
     });
+    
 });
 
 app.get('/:id', (req, res) => {
@@ -57,6 +77,7 @@ app.get('/:id', (req, res) => {
         res.status(404).send('data not found')
     });
 });
+
 
 app.post('/', (req, res) => {
     const doc = new Documents({
@@ -74,6 +95,7 @@ app.post('/', (req, res) => {
 });
 
 app.delete('/:id', (req, res) => {
+
         Documents.remove({_id : req.params.id})
         .then((result) => {
             res.send(result);
@@ -83,9 +105,9 @@ app.delete('/:id', (req, res) => {
         });
 });
 
-app.patch('/:id', (req, res) => {
+app.put('/:id', (req, res) => {
     
-    Documents.updateOne({_id : req.params.id}, { $set: {content: req.body.content} })
+    Documents.updateOne({_id : req.params.id}, { $addToSet: {access: req.body.access } })
     .then((result) => {
         res.send(result);
     })
@@ -94,7 +116,18 @@ app.patch('/:id', (req, res) => {
     });
 });
 
-app.use('/user', userRoutes);
+app.put('/setCreator/:id', (req, res) => {
+    
+    Documents.updateOne({_id : req.params.id}, { $set: {creator: req.body.creator } })
+    .then((result) => {
+        res.send(result);
+    })
+    .catch(() => {
+        res.status(404).send('Could not update database. Make sure _ID is correct.')
+    });
+});
+
+app.use('/user', router);
 
 
 // const server = app.listen(port, () => {
