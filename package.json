@@ -3,6 +3,7 @@
   "version": "6.0.0",
   "description": "",
   "main": "index.js",
+  "proxy": "http://localhost:1337/",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text --reporter=clover mocha --timeout 10000 --exit ",
     "start": "nodemon start.js",
@@ -14,17 +15,22 @@
   "license": "ISC",
   "dependencies": {
     "@nestjs/testing": "^8.0.6",
+    "axios": "^0.22.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "file-saver": "^2.0.5",
+    "graphql": "^15.6.0",
+    "html-pdf": "^3.0.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.1",
     "mongoose": "^6.0.6",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.12",
     "optional-require": "^1.1.7",
-    "socket.io": "^4.2.0",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.3"
+    "socket.io": "^4.2.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",
@@ -34,9 +40,7 @@
     "mocha": "^9.1.1",
     "nodemon": "^2.0.12",
     "nyc": "^15.1.0",
-    "supertest": "^6.1.6",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.3.4000"
+    "supertest": "^6.1.6"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.3",

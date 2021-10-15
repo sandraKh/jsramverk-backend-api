@@ -8,7 +8,7 @@ const cors = require('cors');
 const Documents = require('./models/data.js')
 const { graphqlHTTP } = require('express-graphql');
 const visual = false;
-
+const pdf = require('html-pdf');
 const auth = require('./middleware/auth.js');
 process.env.NODE_ENV = 'ci' 
 
@@ -48,6 +48,24 @@ const {
   const schema = new GraphQLSchema({
       query: RootQueryType
   });
+
+
+const pdfTemplate = require('./documents');
+
+app.post('/create-pdf', (req, res) => {
+    pdf.create(pdfTemplate(req.body), {}).toFile('result.pdf', (err) => {
+        if(err) {
+            res.send(Promise.reject());
+        }
+
+        res.send(Promise.resolve());
+    });
+});
+
+app.get('/fetch-pdf', (req, res) => {
+    res.sendFile(`${__dirname}/result.pdf`)
+})
+
 
 app.use('/graphql', graphqlHTTP({
     schema: schema,
