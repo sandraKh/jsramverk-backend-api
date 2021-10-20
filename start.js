@@ -1,16 +1,18 @@
 const app = require("./app");
 const Document = require("./models/data.js");
-const mongoose = require("mongoose");
-const config = require("./config.json")
+
+
+// const mongoose = require("mongoose");
+// const config = require("./config.json")
 
 
 
-mongoose.connect(`mongodb+srv://${config.username}:${config.password}@cluster0.xfvcp.mongodb.net/dev?retryWrites=true&w=majority`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-})
+// mongoose.connect(`mongodb+srv://${config.username}:${config.password}@cluster0.xfvcp.mongodb.net/dev?retryWrites=true&w=majority`, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false,
+//   useCreateIndex: true,
+// })
 
 const server = require("http").createServer(app);
 

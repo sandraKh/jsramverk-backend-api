@@ -10,6 +10,8 @@ const { graphqlHTTP } = require('express-graphql');
 const visual = false;
 const pdf = require('html-pdf');
 const auth = require('./middleware/auth.js');
+const config = require("./config.json")
+
 process.env.NODE_ENV = 'ci' 
 
 
@@ -52,6 +54,30 @@ const {
 
 const pdfTemplate = require('./documents');
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(config.apikey);
+
+app.get('/send-email', (req, res) => {
+
+    const { recipient, sender, topic, text } = req.query; 
+
+    const msg = {
+        to: recipient, 
+        from: sender,
+        subject: topic,
+        text: text,
+    }
+    sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent');
+      return;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
 app.post('/create-pdf', (req, res) => {
     pdf.create(pdfTemplate(req.body), {}).toFile('result.pdf', (err) => {
         if(err) {
@@ -71,6 +97,9 @@ app.use('/graphql', graphqlHTTP({
     schema: schema,
     graphiql: visual, // Visual är satt till true under utveckling
 }));
+
+
+
 
 app.get('/', (req, res) => {
 
@@ -123,6 +152,18 @@ app.delete('/:id', (req, res) => {
         });
 });
 
+app.put('/setComment/:id', (req, res) => {
+    
+    Documents.updateOne({_id : req.params.id}, { $addToSet: {comments: req.body.comments } })
+    .then((result) => {
+        res.send(result);
+    })
+    .catch(() => {
+        res.status(404).send('Could not update database. Make sure _ID is correct.')
+    });
+});
+
+
 app.put('/:id', (req, res) => {
     
     Documents.updateOne({_id : req.params.id}, { $addToSet: {access: req.body.access } })
@@ -133,6 +174,8 @@ app.put('/:id', (req, res) => {
         res.status(404).send('Could not update database. Make sure _ID is correct.')
     });
 });
+
+
 
 app.put('/setCreator/:id', (req, res) => {
     
@@ -145,7 +188,12 @@ app.put('/setCreator/:id', (req, res) => {
     });
 });
 
+
+
+
 app.use('/user', router);
+
+
 
 
 // const server = app.listen(port, () => {

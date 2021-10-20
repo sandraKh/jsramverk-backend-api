@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@nestjs/testing": "^8.0.6",
+    "@sendgrid/mail": "^7.4.7",
     "axios": "^0.22.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
